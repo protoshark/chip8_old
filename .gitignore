@@ -1,0 +1,12 @@
+/Cargo.lock
+/.vscode
+
+#Ignore external resources
+/res
+
+#Nix dev environment
+/*.nix
+/.envrc
+
+#Added by cargo
+/target
