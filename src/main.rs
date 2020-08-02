@@ -13,10 +13,28 @@
 
 use std::env;
 use std::fs;
-use std::path::Path;
-use std::io::Read;
+use std::{io::Read, path::Path};
 
-// const MEM_SIZE: usize = 4_000;
+// TODO: move to own file
+mod cpu {
+    const NUM_REG: usize = 0xF;
+    #[derive(Default)]
+    pub struct Cpu {
+        registers: [u8; NUM_REG],
+    }
+}
+
+// TODO: move to own file
+mod chip8 {
+    use super::cpu;
+
+    const MEM_SIZE: usize = 0x1000;
+
+    pub struct Chip8 {
+        memory: [u8; MEM_SIZE],
+        cpu: cpu::Cpu,
+    }
+}
 
 fn main() {
     let mut args = env::args();
