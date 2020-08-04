@@ -3,8 +3,8 @@
     memory: 4kB
     cpu clock: 1MHz
 
-    display:      64x32 pixels
-    font sprites: 04x05 pixels
+    display: 64x32 pixels
+    font sprites: 4x5 pixels
 
     === Memory Map ===
     interpreter:    0x000-0x1FF [Leave empty]
@@ -42,6 +42,10 @@ fn main() {
     let rom_file_name = args.nth(1).unwrap();
 
     let rom = read_file(rom_file_name);
+
+    let mut ch8 = chip8::Chip8::new();
+    ch8.load_binary(rom, 0x1ff);
+    ch8.run();
 }
 
 fn read_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
