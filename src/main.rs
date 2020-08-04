@@ -79,10 +79,39 @@ mod chip8 {
     }
         }
     }
+
+    #[derive(Debug)]
     pub struct Chip8 {
-        memory: [u8; MEM_SIZE],
+        ram: Vec<u8>,
+        vram: Vec<u8>,
+        stack: [u8; STACK_SIZE],
         cpu: cpu::Cpu,
     }
+
+    impl Chip8 {
+        pub fn new() -> Chip8 {
+            let mut ram = vec![0; RAM_SIZE];
+
+            // load font
+            for (i, &byte) in font::FONT_DATA.iter().enumerate() {
+                ram[i] = byte;
+            }
+
+            let vram = vec![0; VRAM_SIZE];
+            let stack = [0; STACK_SIZE];
+
+            Chip8 {
+                ram,
+                vram,
+                stack,
+                cpu: cpu::Cpu::default(),
+            }
+        }
+}
+
+}
+
+}
 }
 
 fn main() {
