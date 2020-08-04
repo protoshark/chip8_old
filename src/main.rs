@@ -18,15 +18,15 @@ use std::{io::Read, path::Path};
 
 // TODO: move to own file
 mod cpu {
-        // number of registers
-        const NUM_REG: usize = 16;
-
-        #[derive(Default, Debug)]
-        pub struct Cpu {
+    const NUM_REG: usize = 0xF;
+    #[derive(Default)]
+    pub struct Cpu {
         registers: [u8; NUM_REG],
     }
-}
-
+            pub(super) pc: u16,
+            pub(super) i: u16,
+            pub(super) registers: [u8; NUM_REG],
+        }
 // TODO: move to own file
 mod chip8 {
     use super::cpu;
