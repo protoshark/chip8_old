@@ -18,9 +18,11 @@ use std::{io::Read, path::Path};
 
 // TODO: move to own file
 mod cpu {
-    const NUM_REG: usize = 0xF;
-    #[derive(Default)]
-    pub struct Cpu {
+        // number of registers
+        const NUM_REG: usize = 16;
+
+        #[derive(Default, Debug)]
+        pub struct Cpu {
         registers: [u8; NUM_REG],
     }
 }
@@ -42,10 +44,6 @@ fn main() {
     let rom_file_name = args.nth(1).unwrap();
 
     let rom = read_file(rom_file_name);
-
-    let mut ch8 = chip8::Chip8::new();
-    ch8.load_binary(rom, 0x1ff);
-    ch8.run();
 }
 
 fn read_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
