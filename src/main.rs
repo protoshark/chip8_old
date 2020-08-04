@@ -49,9 +49,11 @@ mod chip8 {
     }
 
     mod cpu {
-    const NUM_REG: usize = 0xF;
-    #[derive(Default)]
-    pub struct Cpu {
+        // number of registers
+        const NUM_REG: usize = 16;
+
+        #[derive(Default, Debug)]
+        pub struct Cpu {
         registers: [u8; NUM_REG],
     }
             pub(super) pc: u16,
