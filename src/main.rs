@@ -60,13 +60,18 @@ mod chip8 {
         }
 
         impl Cpu {
-            pub fn fetch<B: AsRef<Vec<u8>>>(&mut self, buffer: B) -> u8 {
+            pub fn fetch<B: AsRef<Vec<u8>>>(&mut self, buffer: B) -> Option<u8> {
+                // check if the pc exceed the ram limit
+                if self.pc as usize > super::RAM_SIZE {
+                    return None
+                }
+
                 let buffer = buffer.as_ref();
 
                 let opcode = buffer[self.pc as usize];
                 self.pc += 2;
 
-                opcode
+                Some(opcode)
             }
 
             pub fn decode(opcode: u8) {
@@ -114,7 +119,10 @@ mod chip8 {
 
         pub fn run(&mut self) {
             loop {
-                let opcode = self.cpu.fetch(&self.ram);
+                let opcode = match self.cpu.fetch(&self.ram) {
+                    Some(opcode) => opcode,
+                    None => panic!("buffer overflow"),
+                };
                 self.execute(opcode)
             }
         }
