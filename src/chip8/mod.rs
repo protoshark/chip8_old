@@ -139,11 +139,12 @@ impl Chip8 {
 
     pub fn run(&mut self) {
         loop {
-            let opcode = match self.cpu.fetch(&self.ram) {
-                Some(opcode) => opcode,
-                None => panic!("The CHIP-8 got a buffer overflow"),
+            let word = match self.cpu.fetch(&self.ram) {
+                Some(word) => word,
+                None => panic!("CHIP-8 got a buffer overflow"),
             };
-            self.execute(opcode)
+            println!("running: {:04x}", word);
+            self.execute(word);
         }
     }
 }

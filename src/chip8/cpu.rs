@@ -19,7 +19,8 @@ impl Default for Cpu {
 }
 
 impl Cpu {
-    pub fn fetch<B: AsRef<Vec<u8>>>(&mut self, buffer: B) -> Option<u8> {
+    // return the next word and increment the PC
+    pub fn fetch<B: AsRef<Vec<u8>>>(&mut self, buffer: B) -> Option<u16> {
         // check if the pc exceed the ram limit
         if self.pc as usize > super::RAM_SIZE {
             return None;
@@ -27,13 +28,9 @@ impl Cpu {
 
         let buffer = buffer.as_ref();
 
-        let opcode = buffer[self.pc as usize];
+        let word = (buffer[self.pc as usize] as u16) << 8 | buffer[self.pc as usize + 1] as u16;
         self.pc += 2;
 
-        Some(opcode)
-    }
-
-    pub fn decode(opcode: u8) {
-        // TODO
+        Some(word)
     }
 }
