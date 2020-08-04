@@ -64,8 +64,19 @@ mod chip8 {
 mod chip8 {
     use super::cpu;
 
-    const MEM_SIZE: usize = 0x1000;
+        impl Cpu {
+            pub fn fetch<B: AsRef<Vec<u8>>>(&mut self, buffer: B) -> u8 {
+                let buffer = buffer.as_ref();
 
+                let opcode = buffer[self.pc as usize];
+                self.pc += 2;
+
+                opcode
+            }
+
+    }
+        }
+    }
     pub struct Chip8 {
         memory: [u8; MEM_SIZE],
         cpu: cpu::Cpu,
