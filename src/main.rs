@@ -3,12 +3,13 @@
     memory: 4kB
     cpu clock: 1MHz
 
-    display: 64x32 pixels
-    font sprites: 4x5 pixels
+    display:      64x32 pixels
+    font sprites: 04x05 pixels
 
     === Memory Map ===
-    interpreter:    000-1FF (leave empty)
-    font:           050-09F (by convention, but can be anywhere between 000 and 1FF)
+    interpreter:    0x000-0x1FF [Leave empty]
+    font:           0x050-0x0A0 [By convention. It can be anywhere between 000 and 1FF]
+    rom+ram:        0x200-0xFFF
 */
 
 use std::env;
