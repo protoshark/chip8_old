@@ -1,11 +1,21 @@
 // number of registers
 const NUM_REG: usize = 16;
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Cpu {
     pub(super) pc: u16,
     pub(super) i: u16,
     pub(super) registers: [u8; NUM_REG],
+}
+
+impl Default for Cpu {
+    fn default() -> Cpu {
+        Cpu {
+            pc: 0x200,
+            i: 0,
+            registers: [0; NUM_REG],
+        }
+    }
 }
 
 impl Cpu {
