@@ -74,6 +74,8 @@ mod chip8 {
                 opcode
             }
 
+            pub fn decode(opcode: u8) {
+                // TODO
     }
         }
     }
