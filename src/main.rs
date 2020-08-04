@@ -18,6 +18,8 @@ use std::env;
 use std::fs;
 use std::{io::Read, path::Path};
 
+use chip8::Chip8;
+
 fn main() {
     let mut args = env::args();
     let rom_file_name = args.nth(1).unwrap();
