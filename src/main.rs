@@ -24,8 +24,8 @@ fn main() {
 
     let rom = read_file(rom_file_name);
 
-    let mut ch8 = chip8::Chip8::new();
-    ch8.load_binary(rom, 0x1ff);
+    let mut ch8 = Chip8::new();
+    ch8.load_binary(rom, 0x200);
     ch8.run();
 }
 
