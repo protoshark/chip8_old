@@ -114,7 +114,6 @@ impl Chip8 {
                     self.cpu.registers[y] as usize
                 );
                 let height = (word & 0xF) as usize;
-                println!("{:?},{}", coords, height);
                 
                 self.cpu.registers[0xF] = 0;
                 for i in 0..height {
@@ -143,7 +142,6 @@ impl Chip8 {
                 Some(word) => word,
                 None => panic!("CHIP-8 got a buffer overflow"),
             };
-            println!("running: {:04x}", word);
             self.execute(word);
         }
     }
