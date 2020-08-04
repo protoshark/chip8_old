@@ -113,8 +113,16 @@ mod chip8 {
             self.ram.splice(offset..offset, bin.iter().cloned());
 }
 
+        pub fn execute(&mut self, opcode: u8) {
+            cpu::Cpu::decode(opcode);
 }
 
+        pub fn run(&mut self) {
+            loop {
+                let opcode = self.cpu.fetch(&self.ram);
+                self.execute(opcode)
+            }
+        }
 }
 }
 
@@ -126,6 +134,7 @@ fn main() {
 
     let mut ch8 = chip8::Chip8::new();
     ch8.load_binary(rom, 0x1ff);
+    ch8.run();
 }
 
 fn read_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
