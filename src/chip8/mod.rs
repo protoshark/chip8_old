@@ -25,7 +25,7 @@ impl Chip8 {
         let mut ram = vec![0; RAM_SIZE];
 
         // load font
-        for (i, &byte) in font::FONT_DATA.iter().enumerate() {
+        for (i, &byte) in font::FONT_SET.iter().enumerate() {
             ram[i] = byte;
         }
 
