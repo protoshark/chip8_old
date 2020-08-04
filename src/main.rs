@@ -107,6 +107,10 @@ mod chip8 {
                 cpu: cpu::Cpu::default(),
             }
         }
+
+        pub fn load_binary(&mut self, bin: Vec<u8>, offset: usize) {
+            // insert binary at offset
+            self.ram.splice(offset..offset, bin.iter().cloned());
 }
 
 }
@@ -119,6 +123,9 @@ fn main() {
     let rom_file_name = args.nth(1).unwrap();
 
     let rom = read_file(rom_file_name);
+
+    let mut ch8 = chip8::Chip8::new();
+    ch8.load_binary(rom, 0x1ff);
 }
 
 fn read_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
