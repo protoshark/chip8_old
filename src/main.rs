@@ -54,15 +54,10 @@ mod chip8 {
 
         #[derive(Default, Debug)]
         pub struct Cpu {
-        registers: [u8; NUM_REG],
-    }
             pub(super) pc: u16,
             pub(super) i: u16,
             pub(super) registers: [u8; NUM_REG],
         }
-// TODO: move to own file
-mod chip8 {
-    use super::cpu;
 
         impl Cpu {
             pub fn fetch<B: AsRef<Vec<u8>>>(&mut self, buffer: B) -> u8 {
@@ -76,7 +71,7 @@ mod chip8 {
 
             pub fn decode(opcode: u8) {
                 // TODO
-    }
+            }
         }
     }
 
@@ -111,11 +106,11 @@ mod chip8 {
         pub fn load_binary(&mut self, bin: Vec<u8>, offset: usize) {
             // insert binary at offset
             self.ram.splice(offset..offset, bin.iter().cloned());
-}
+        }
 
         pub fn execute(&mut self, opcode: u8) {
             cpu::Cpu::decode(opcode);
-}
+        }
 
         pub fn run(&mut self) {
             loop {
@@ -123,7 +118,7 @@ mod chip8 {
                 self.execute(opcode)
             }
         }
-}
+    }
 }
 
 fn main() {
