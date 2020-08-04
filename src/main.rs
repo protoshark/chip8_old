@@ -121,7 +121,7 @@ mod chip8 {
             loop {
                 let opcode = match self.cpu.fetch(&self.ram) {
                     Some(opcode) => opcode,
-                    None => panic!("buffer overflow"),
+                    None => panic!("The CHIP-8 got a buffer overflow"),
                 };
                 self.execute(opcode)
             }
