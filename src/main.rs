@@ -3,8 +3,8 @@
     memory: 4kB
     cpu clock: 1MHz
 
-    display: 64x32 pixels
-    font sprites: 4x5 pixels
+    display:      64x32 pixels
+    font sprites: 04x05 pixels
 
     === Memory Map ===
     interpreter:    0x000-0x1FF [Leave empty]
