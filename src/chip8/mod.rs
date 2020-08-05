@@ -242,7 +242,9 @@ impl Chip8 {
                             }
                         }
                     }
-                    _ => {}
+                    _ => {
+                        panic!("0x{:04x}", word);
+                    }
                 }
             }
             _ => panic!("unknown opcode 0x{:04x}", word),
