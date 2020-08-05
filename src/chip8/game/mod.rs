@@ -4,7 +4,7 @@ pub struct Game {
     pub ch8: Chip8,
     width: usize,
     height: usize,
-    window: Option<*mut i8>,
+    window: *mut i8,
 }
 
 impl Game {
@@ -13,7 +13,7 @@ impl Game {
             ch8: super::Chip8::new(),
             width: super::DISPLAY_WIDTH,
             height: super::DISPLAY_HEIGHT,
-            window: None,
+            window: &mut 0,
         }
     }
 
@@ -28,13 +28,13 @@ impl Game {
         ncurses::noecho();
         ncurses::curs_set(ncurses::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
-        let window = ncurses::newwin(self.height as i32, self.width as i32, 0, 0);
-        ncurses::keypad(window, true);
+        self.window = ncurses::newwin(self.height as i32, self.width as i32, 0, 0);
+        ncurses::keypad(self.window, true);
 
         self.window = Some(window);
 
         ncurses::refresh();
-        ncurses::timeout(250);
+        ncurses::timeout(50);
 
         self.draw();
 
@@ -42,26 +42,26 @@ impl Game {
             let word = self.ch8.fetch();
             self.ch8.execute(word);
 
+            self.read_key();
             if self.ch8.drew {
                 self.draw();
             }
 
-            std::thread::sleep(std::time::Duration::from_millis(5));
+            // std::thread::sleep(std::time::Duration::from_millis(5));
         }
 
         // delwin(window);
         // endwin();
     }
 
-    pub fn draw(&self) {
-        let window = self.window.unwrap();
-        ncurses::wclear(window);
+    fn draw(&self) {
+        ncurses::werase(self.window);
 
         for x in 0..self.width {
             for y in 0..self.height {
                 let offset = x + y * self.width;
                 ncurses::mvwaddch(
-                    window,
+                    self.window,
                     y as i32,
                     x as i32,
                     if self.ch8.vram[offset] == 1 {
@@ -72,6 +72,6 @@ impl Game {
                 );
             }
         }
-        ncurses::wrefresh(window);
+        ncurses::wrefresh(self.window);
     }
 }
