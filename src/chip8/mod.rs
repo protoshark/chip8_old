@@ -101,11 +101,67 @@ impl Chip8 {
                 self.cpu.registers[x] = result;
             }
             // Logical and arithmetic group
-            //
+            0x8 => {
+                // 8XYN
+                let n = word & 0xF;
+
+                let vy = self.cpu.registers[y];
+                let vx = self.cpu.registers[x];
+
+                self.cpu.registers[x] = match n {
+                    0x0 => vy, // 8XY0 (LD VX,VY)
+                    0x1 => vx | vy, // 8XY1 (OR VX,VY)
+                    0x2 => vx & vy, // 8XY2 (AND VX,VY)
+                    0x3 => vx ^ vy, // 8XY3 (XOR VX,VY)
+                    0x4 => {
+                        // 8XY4 (ADD VX,VY)
+                        let result = vx.wrapping_add(vy);
+                        // set the overflow flag
+                        self.cpu.registers[0xF] = (result < vx) as u8;
+                        result
+                    }
+                    0x5 => {
+                        // 8XY5 (SUB VX,VY)
+                        let result = vx.wrapping_sub(vy);
+                        self.cpu.registers[0xF] = (vx > vy) as u8;
+                        result
+                    },
+                    0x6 => {
+                        // 8XY6 (SHR VX,VY)
+                        let result = vy.wrapping_shr(1);
+                        self.cpu.registers[0xF] = (vy & 0x01) as u8;
+                        result
+                    }
+                    0x7 => {
+                        // 8XY7 (SUBN VX,VY)
+                        let result = vy.wrapping_sub(vx);
+
+                        self.cpu.registers[0xF] = (vy > vx) as u8;
+                        result
+                    }
+                    0xE => {
+                        // 8XY6 (SHR VX,VY)
+                        let result = vy.wrapping_shl(1);
+                        self.cpu.registers[0xF] = (vy & 0x80) as u8;
+                        result
+                    }
+                    _ => panic!("unknown opcode 0x{:4x}", word),
+                }
+            }
             0xA => {
                 // ANNN (LD I,NNN)
                 let nnn = word & 0xFFF;
                 self.cpu.i = nnn;
+            }
+            0xB => {
+                // BNNN (JP V0,NNN)
+                let nnn =  word & 0xFFF;
+                self.cpu.pc = nnn + self.cpu.registers[0x0] as u16;
+            }
+            0xC => {
+                // CXNN (RND VX,NN)
+                let mut rng = rand::thread_rng();
+                self.cpu.registers[x] = nn & rng.gen_range(0, nn);
             }
             0xD => {
                 // DXYN (DRW VX,VY,N)
@@ -130,6 +186,36 @@ impl Chip8 {
                             self.vram[offset] ^= 1;
                         }
                     }
+                }
+                self.drew = true;
+            }
+            0xF => {
+                let nn = word & 0x00FF;
+                match nn {
+                    0x1E => {
+                        // FX1E (ADD I,VX)
+                        let result = self.cpu.i.wrapping_add(self.cpu.registers[x] as u16);
+                        if result > 0xFFF || result < self.cpu.i {
+                            self.cpu.registers[0xF] = 1;
+                        }
+                        self.cpu.i = result;
+                    }
+                    0x29 => {
+                        // FX29 (LD F,VX)
+                        self.cpu.i = font::FONT_MEM_OFFSET as u16 + 5 * (self.cpu.registers[x] & 0xF) as u16
+                    }
+                    0x55 | 0x65 => {
+                        // (FX55 (LD [I],VX) & FX65 (LD VX,[I])
+                        for i in 0..=x {
+                            let offset = (self.cpu.i + self.cpu.registers[i] as u16) as usize;
+                            if y == 0x5 {
+                                self.ram[offset] = self.cpu.registers[i];
+                            } else if y == 0x6 {
+                                self.cpu.registers[i] = self.ram[offset];
+                            }
+                        }
+                    }
+                    _ => {}
                 }
             }
             _ => panic!("unknown opcode 0x{:04x}", word),
