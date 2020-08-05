@@ -25,15 +25,15 @@ use chip8::game::Game;
 fn main() {
     let mut args = env::args();
     let rom_file_name = args.nth(1).unwrap();
-
+    
     let rom = read_file(rom_file_name);
-
+    
     let mut game = Game::new();
     game.load_game(rom);
     game.run();
 }
 
-fn read_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
+pub fn read_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
     let mut file = fs::File::open(path.as_ref()).unwrap();
 
     let mut file_buffer = Vec::new();

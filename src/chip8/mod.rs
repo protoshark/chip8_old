@@ -190,7 +190,7 @@ impl Chip8 {
                     self.cpu.registers[y] as usize
                 );
                 let height = (word & 0xF) as usize;
-                
+
                 self.cpu.registers[0xF] = 0;
                 for i in 0..height {
                     let pix = self.ram[self.cpu.i as usize + i];
@@ -247,5 +247,21 @@ impl Chip8 {
             let word = self.fetch();
             self.execute(word);
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::read_file;
+
+    #[test]
+    fn ibm_logo() {
+        let rom_file_name = "res/IBM.ch8";
+
+        let rom = read_file(rom_file_name);
+        let mut ch8 = super::Chip8::new();
+
+        ch8.load_binary(rom, 0x200);
+        ch8.run();
     }
 }
