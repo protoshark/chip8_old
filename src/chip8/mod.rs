@@ -241,20 +241,19 @@ impl Chip8 {
                     }
                     0x29 => {
                         // FX29 (LD F,VX)
-                        self.cpu.i = font::FONT_MEM_OFFSET as u16 + 5 * (self.cpu.registers[x] & 0xF) as u16
+                        self.cpu.i = 5 * (self.cpu.registers[x] as u16) + font::FONT_MEM_OFFSET as u16;
                     }
                     0x33 => {
                         // FX33 (LD B,VX)
-                        let mut value = x;
-                        for i in 0..3 {
-                            self.ram[2 - i + self.cpu.i as usize] = (value % 10) as u8;
-                            value /= 10;
-                        }
+                        let i = self.cpu.i as usize;
+                        self.ram[i] = self.cpu.registers[x] / 100;
+                        self.ram[i+1] = (self.cpu.registers[x] / 10) % 10;
+                        self.ram[i+2] = (self.cpu.registers[x] % 100) % 10;
                     }
                     0x55 | 0x65 => {
                         // (FX55 (LD [I],VX) & FX65 (LD VX,[I])
                         for i in 0..=x {
-                            let offset = (self.cpu.i + self.cpu.registers[i] as u16) as usize;
+                            let offset = i + (self.cpu.i) as usize;
                             if y == 0x5 {
                                 self.ram[offset] = self.cpu.registers[i];
                             } else if y == 0x6 {
