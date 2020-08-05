@@ -29,7 +29,7 @@ impl Chip8 {
 
         // load font
         for (i, &byte) in font::FONT_SET.iter().enumerate() {
-            ram[i] = byte;
+            ram[i+font::FONT_MEM_OFFSET] = byte;
         }
 
         Chip8 {
@@ -44,6 +44,16 @@ impl Chip8 {
     pub fn load_binary(&mut self, bin: Vec<u8>, offset: usize) {
         // insert binary at offset
         self.ram.splice(offset..offset, bin.iter().cloned());
+    }
+
+    pub fn fetch(&mut self) -> u16 {
+        let word = match self.cpu.fetch(&self.ram) {
+            None => {
+                panic!("Couldn't get fetch a opcode");
+            }
+            Some(word) => word
+        };
+        word
     }
 
     pub fn execute(&mut self, word: u16) {
