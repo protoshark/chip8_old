@@ -6,6 +6,8 @@ pub struct Cpu {
     pub(super) pc: u16,
     pub(super) i: u16,
     pub(super) registers: [u8; NUM_REG],
+    pub(super) delay_timer: u8,
+    pub(super) sound_timer: u8,
 }
 
 impl Default for Cpu {
@@ -14,6 +16,8 @@ impl Default for Cpu {
             pc: 0x200,
             i: 0,
             registers: [0; NUM_REG],
+            delay_timer: 0,
+            sound_timer: 0,
         }
     }
 }

@@ -32,19 +32,28 @@ impl Game {
         ncurses::keypad(self.window, true);
 
         ncurses::refresh();
-        ncurses::timeout(50);
+        ncurses::timeout(3);
 
         self.draw();
+
+        let mut last_timer = std::time::SystemTime::now();
 
         loop {
             let word = self.ch8.fetch();
             self.ch8.execute(word);
 
-            self.read_key();
             if self.ch8.drew {
                 self.draw();
             }
+            self.read_key();
 
+            let now = std::time::SystemTime::now();
+            if now > last_timer + std::time::Duration::from_secs_f64(1f64 / 60f64) {
+                // self.ch8.key = -1;
+                let delay = self.ch8.cpu.delay_timer;
+                self.ch8.cpu.delay_timer = delay.saturating_sub(1);
+                last_timer = std::time::SystemTime::now();
+            }
             // std::thread::sleep(std::time::Duration::from_millis(5));
         }
 
@@ -55,21 +64,25 @@ impl Game {
     fn read_key(&mut self) {
         let key_code = ncurses::getch();
 
-        #[cfg_attr(rustfmt, rustfmt_skip)]
-        static KEY_TABLE: [i32; 16] = [
-            '1' as i32, '2' as i32, '3' as i32, '4' as i32,
-            'q' as i32, 'w' as i32, 'e' as i32, 'r' as i32,
-            'a' as i32, 's' as i32, 'd' as i32, 'f' as i32,
-            'z' as i32, 'x' as i32, 'c' as i32, 'v' as i32,
-        ];
-
-        let key = KEY_TABLE.iter().find(|&&key| key == key_code);
-        match key {
-            Some(&code) => {
-                self.ch8.key = (code & 0xFF) as i8;
-            }
-            None => {}
-        };
+        self.ch8.key = match key_code as u16 as u8 as char {
+            '1' => 0,
+            '2' => 1,
+            '3' => 2,
+            '4' => 3,
+            'q' => 4,
+            'w' => 5,
+            'e' => 6,
+            'r' => 7,
+            'a' => 8,
+            's' => 9,
+            'd' => 10,
+            'f' => 11,
+            'z' => 12,
+            'x' => 13,
+            'c' => 14,
+            'v' => 15,
+            _ => self.ch8.key,
+        }
     }
 
     fn draw(&self) {

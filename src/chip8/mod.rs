@@ -213,22 +213,28 @@ impl Chip8 {
                 }
                 self.drew = true;
             }
+            0xE => {
+                match nn {
+                    0x9E if self.key == self.cpu.registers[x] as i8 => self.cpu.pc += 2,
+                    0xA1 if self.key != self.cpu.registers[x] as i8 => self.cpu.pc += 2,
+                    _ => {}
+                }
+            }
             0xF => {
                 let nn = word & 0x00FF;
                 match nn {
-                    0x07 | 0x15 | 0x18 => {
-                        // FX07 & FX15 & FX18
-                        // TODO: TIMERS
-                    }
+                    0x07 => // FX07 (LD VX,DT)
+                        self.cpu.registers[x] = self.cpu.delay_timer,
+                    0x15 => // FX15 (LD DT,VX)
+                        self.cpu.delay_timer = self.cpu.registers[x],
+                    0x18 => // FX18 (LD ST,VX)
+                        self.cpu.sound_timer = self.cpu.registers[x],
                     0x0A => {
                         // FX0A (LD VX,K)
                         self.cpu.pc -= 2;
                         if self.key != -1 {
                             self.cpu.registers[x] = self.key as u8;
                             self.cpu.pc += 2;
-
-                            // release the key
-                            self.key = -1;
                         }
                     }
                     0x1E => {
