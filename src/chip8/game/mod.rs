@@ -54,7 +54,7 @@ impl Game {
             self.read_key();
 
             let now = std::time::SystemTime::now();
-            if now > last_timer + std::time::Duration::from_secs_f64(1f64 / 60f64) {
+            if now > last_timer + std::time::Duration::from_secs_f64(1. / 60.) {
                 // self.ch8.key = -1;
                 let delay = self.ch8.cpu.delay_timer;
                 self.ch8.cpu.delay_timer = delay.saturating_sub(1);
