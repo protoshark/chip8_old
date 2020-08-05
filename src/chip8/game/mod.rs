@@ -54,6 +54,8 @@ impl Game {
 
     fn read_key(&mut self) {
         let key_code = ncurses::getch();
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
         static KEY_TABLE: [i32; 16] = [
             '1' as i32, '2' as i32, '3' as i32, '4' as i32,
             'q' as i32, 'w' as i32, 'e' as i32, 'r' as i32,
