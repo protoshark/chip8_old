@@ -5,4 +5,5 @@ authors = ["protoshark"]
 edition = "2018"
 
 [dependencies]
+ncurses = { version = "5.99", features = ["wide"] }
 rand = "0.7"

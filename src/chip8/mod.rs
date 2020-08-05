@@ -1,3 +1,4 @@
+pub mod game;
 pub mod cpu;
 mod font;
 
@@ -16,6 +17,8 @@ pub struct Chip8 {
     stack: Vec<u16>,
     ram: Vec<u8>,
     vram: Vec<u8>,
+
+    drew: bool,
 }
 
 impl Chip8 {
@@ -34,6 +37,7 @@ impl Chip8 {
             stack,
             ram,
             vram,
+            drew: false,
         }
     }
 
@@ -43,11 +47,14 @@ impl Chip8 {
     }
 
     pub fn execute(&mut self, word: u16) {
-        let op = word >> 0xC & 0xF;
+        let op = (word >> 0xC) & 0xF;
 
-        let x: usize = (word >> 0x8 & 0x0F00) as usize;
-        let y: usize = (word >> 0x4 & 0x00F0) as usize;
+        let x: usize = ((word & 0x0F00) >> 0x8) as usize;
+        let y: usize = ((word & 0x00F0) >> 0x4) as usize;
+
         let nn = (word & 0x00FF) as u8;
+
+        self.drew = false;
 
         // TODO: move instruction to their own function?
         match op {
@@ -57,6 +64,7 @@ impl Chip8 {
                     0xE0 => {
                         // 00E0 (CLS)
                         self.vram.iter_mut().for_each(|v| *v = 0);
+                        self.drew = true;
                     }
                     0xEE => {
                         // 00EE (RET)
@@ -176,8 +184,7 @@ impl Chip8 {
                     let pix = self.ram[self.cpu.i as usize + i];
                     for j in 0..8 {
                         if (pix & (0x80 >> j)) != 0 {
-                            let offset = (coords.1 + i) * DISPLAY_WIDTH + (coords.0 + j);
-
+                            let offset = coords.0 + j + (coords.1 + i) * DISPLAY_WIDTH;
                             if offset > VRAM_SIZE { break }
 
                             if self.vram[offset] == 1 {

@@ -14,11 +14,13 @@
 
 mod chip8;
 
+extern crate ncurses;
+
 use std::env;
 use std::fs;
 use std::{io::Read, path::Path};
 
-use chip8::Chip8;
+use chip8::game::Game;
 
 fn main() {
     let mut args = env::args();
@@ -26,9 +28,9 @@ fn main() {
 
     let rom = read_file(rom_file_name);
 
-    let mut ch8 = Chip8::new();
-    ch8.load_binary(rom, 0x200);
-    ch8.run();
+    let mut game = Game::new();
+    game.load_game(rom);
+    game.run();
 }
 
 fn read_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
