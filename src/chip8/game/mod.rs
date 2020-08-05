@@ -31,8 +31,6 @@ impl Game {
         self.window = ncurses::newwin(self.height as i32, self.width as i32, 0, 0);
         ncurses::keypad(self.window, true);
 
-        self.window = Some(window);
-
         ncurses::refresh();
         ncurses::timeout(50);
 
@@ -52,6 +50,24 @@ impl Game {
 
         // delwin(window);
         // endwin();
+    }
+
+    fn read_key(&mut self) {
+        let key_code = ncurses::getch();
+        static KEY_TABLE: [i32; 16] = [
+            '1' as i32, '2' as i32, '3' as i32, '4' as i32,
+            'q' as i32, 'w' as i32, 'e' as i32, 'r' as i32,
+            'a' as i32, 's' as i32, 'd' as i32, 'f' as i32,
+            'z' as i32, 'x' as i32, 'c' as i32, 'v' as i32,
+        ];
+
+        let key = KEY_TABLE.iter().find(|&&key| key == key_code);
+        match key {
+            Some(&code) => {
+                self.ch8.key = (code & 0xFF) as i8;
+            }
+            None => {}
+        };
     }
 
     fn draw(&self) {

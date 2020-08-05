@@ -21,6 +21,9 @@ pub struct Chip8 {
     vram: Vec<u8>,
 
     drew: bool,
+    // as long ncurses don't provide a way to handle key releases; there's no reason to use a array of keys
+    // keypad: [u8;16],
+    key: i8
 }
 
 impl Chip8 {
@@ -40,6 +43,8 @@ impl Chip8 {
             ram,
             vram,
             drew: false,
+            // keypad: [0;16],
+            key: -1
         }
     }
 
@@ -211,6 +216,21 @@ impl Chip8 {
             0xF => {
                 let nn = word & 0x00FF;
                 match nn {
+                    0x07 | 0x15 | 0x18 => {
+                        // FX07 & FX15 & FX18
+                        // TODO: TIMERS
+                    }
+                    0x0A => {
+                        // FX0A (LD VX,K)
+                        self.cpu.pc -= 2;
+                        if self.key != -1 {
+                            self.cpu.registers[x] = self.key as u8;
+                            self.cpu.pc += 2;
+
+                            // release the key
+                            self.key = -1;
+                        }
+                    }
                     0x1E => {
                         // FX1E (ADD I,VX)
                         let result = self.cpu.i.wrapping_add(self.cpu.registers[x] as u16);
