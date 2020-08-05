@@ -241,12 +241,10 @@ impl Chip8 {
         }
     }
 
+    #[allow(dead_code)]
     pub fn run(&mut self) {
         loop {
-            let word = match self.cpu.fetch(&self.ram) {
-                Some(word) => word,
-                None => panic!("CHIP-8 got a buffer overflow"),
-            };
+            let word = self.fetch();
             self.execute(word);
         }
     }
