@@ -2,6 +2,8 @@ pub mod game;
 pub mod cpu;
 mod font;
 
+use rand::Rng;
+
 // Display info
 pub const DISPLAY_WIDTH: usize = 64;
 pub const DISPLAY_HEIGHT: usize = 32;
