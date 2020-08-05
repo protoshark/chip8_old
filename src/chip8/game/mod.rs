@@ -28,7 +28,13 @@ impl Game {
         ncurses::noecho();
         ncurses::curs_set(ncurses::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
-        self.window = ncurses::newwin(self.height as i32, self.width as i32, 0, 0);
+        let mut maxyx = (0, 0);
+        ncurses::getmaxyx(ncurses::stdscr(), &mut maxyx.0, &mut maxyx.1);
+
+        let centery = (maxyx.0 as usize - self.height) / 2;
+        let centerx = (maxyx.1 as usize - self.width) / 2;
+
+        self.window = ncurses::newwin(self.height as i32, self.width as i32, centery as i32, centerx as i32);
         ncurses::keypad(self.window, true);
 
         ncurses::refresh();
@@ -54,7 +60,6 @@ impl Game {
                 self.ch8.cpu.delay_timer = delay.saturating_sub(1);
                 last_timer = std::time::SystemTime::now();
             }
-            // std::thread::sleep(std::time::Duration::from_millis(5));
         }
 
         // delwin(window);
