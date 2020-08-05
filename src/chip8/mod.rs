@@ -9,9 +9,9 @@ pub const DISPLAY_WIDTH: usize = 64;
 pub const DISPLAY_HEIGHT: usize = 32;
 
 // Memory info
-pub const RAM_SIZE: usize = 0x1000;
-pub const STACK_SIZE: usize = 0x10;
-pub const VRAM_SIZE: usize = DISPLAY_HEIGHT * DISPLAY_WIDTH;
+const RAM_SIZE: usize = 0x1000;
+const STACK_SIZE: usize = 0x10;
+const VRAM_SIZE: usize = DISPLAY_HEIGHT * DISPLAY_WIDTH;
 
 #[derive(Debug)]
 pub struct Chip8 {
@@ -87,7 +87,7 @@ impl Chip8 {
                         // 00EE (RET)
                         self.cpu.pc = self.stack.pop().unwrap();
                     }
-                    _ => panic!("unknown opcode 0x00{:02x}", nn),
+                    _ => {},
                 }
             }
             0x1 => {
@@ -170,7 +170,7 @@ impl Chip8 {
                         self.cpu.registers[0xF] = (vy & 0x80) as u8;
                         result
                     }
-                    _ => panic!("unknown opcode 0x{:4x}", word),
+                    _ => self.cpu.registers[x],
                 }
             }
             0xA => {
@@ -267,12 +267,10 @@ impl Chip8 {
                             }
                         }
                     }
-                    _ => {
-                        panic!("0x{:04x}", word);
-                    }
+                    _ => {}
                 }
             }
-            _ => panic!("unknown opcode 0x{:04x}", word),
+            _ => panic!("opcode 0x{:04x} not implemented", word),
         }
     }
 
@@ -296,7 +294,7 @@ mod test {
         let rom = read_file(rom_file_name);
         let mut ch8 = super::Chip8::new();
 
-        ch8.load_binary(rom, 0x200);
+        ch8.load_binary(rom, super::cpu::GAME_MEM_OFFSET);
         ch8.run();
     }
 }

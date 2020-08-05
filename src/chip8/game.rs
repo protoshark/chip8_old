@@ -19,7 +19,7 @@ impl Game {
 
     pub fn load_game(&mut self, bin: Vec<u8>) {
         //load games to offset 0x200
-        self.ch8.load_binary(bin, 0x200);
+        self.ch8.load_binary(bin, super::cpu::GAME_MEM_OFFSET);
     }
 
     pub fn run(&mut self) {

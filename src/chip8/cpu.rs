@@ -1,6 +1,8 @@
 // number of registers
 const NUM_REG: usize = 16;
 
+pub const GAME_MEM_OFFSET: usize = 0x200;
+
 #[derive(Debug)]
 pub struct Cpu {
     pub(super) pc: u16,
