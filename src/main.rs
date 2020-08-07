@@ -25,9 +25,9 @@ use chip8::game::Game;
 fn main() {
     let mut args = env::args();
     let rom_file_name = args.nth(1).unwrap();
-    
+
     let rom = read_file(rom_file_name);
-    
+
     let mut game = Game::new();
     game.load_game(rom);
     game.run();

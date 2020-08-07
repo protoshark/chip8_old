@@ -32,9 +32,14 @@ impl Game {
         ncurses::getmaxyx(ncurses::stdscr(), &mut maxyx.0, &mut maxyx.1);
 
         let centery = ((maxyx.0 as usize).saturating_sub(self.height)) / 2;
-        let centerx = ((maxyx.1 as usize).saturating_sub(self.width) )/ 2;
+        let centerx = ((maxyx.1 as usize).saturating_sub(self.width)) / 2;
 
-        self.window = ncurses::newwin(self.height as i32, self.width as i32, centery as i32, centerx as i32);
+        self.window = ncurses::newwin(
+            self.height as i32,
+            self.width as i32,
+            centery as i32,
+            centerx as i32,
+        );
         ncurses::keypad(self.window, true);
 
         ncurses::refresh();
