@@ -51,7 +51,13 @@ impl Game {
             if self.ch8.drew {
                 self.draw();
             }
-            self.read_key();
+
+            // beep while sound timer is greater than 0
+            if self.ch8.cpu.sound_timer > 0 {
+                self.ch8.cpu.sound_timer -= 1;
+                ncurses::beep();
+            }
+
 
             let now = std::time::SystemTime::now();
             if now > last_timer + std::time::Duration::from_secs_f64(1. / 60.) {
