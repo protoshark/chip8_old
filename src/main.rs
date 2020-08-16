@@ -2,14 +2,16 @@
     === CHIP-8 Specs ===
     memory: 4kB
     cpu clock: 1MHz
-
-    display:      64x32 pixels
-    font sprites: 04x05 pixels
+    display: 64x32
 
     === Memory Map ===
     interpreter:    0x000-0x1FF [Leave empty]
     font:           0x050-0x0A0 [By convention. It can be anywhere between 000 and 1FF]
-    rom+ram:        0x200-0xFFF
+    ram:            0x200-0xFFF
+
+    === Timers ===
+    delay: Decrement in 60Hz (60 times per second)
+    sound: Decrement every cycle (Should beep while above 0)
 */
 
 mod chip8;

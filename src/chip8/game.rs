@@ -46,6 +46,7 @@ impl Game {
         ncurses::timeout(3);
 
         self.draw();
+        ncurses::box_(self.window, 0, 0);
 
         let mut last_timer = std::time::SystemTime::now();
 
@@ -63,6 +64,7 @@ impl Game {
                 ncurses::beep();
             }
 
+            self.read_key();
 
             let now = std::time::SystemTime::now();
             if now > last_timer + std::time::Duration::from_secs_f64(1. / 60.) {
